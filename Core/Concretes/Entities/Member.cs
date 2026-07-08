@@ -4,8 +4,8 @@ namespace Core.Concretes.Entities
 {
     public class Member : IdentityUser<string>
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
         public string? PhoneNumber2 { get; set; }
         public DateTime? BirthDate { get; set; }
         public string? DriverLicenseNumber { get; set; }
@@ -21,10 +21,10 @@ namespace Core.Concretes.Entities
         public bool Deleted { get; set; } = false;
 
         // Navigation Properties
-        public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
-        public virtual ICollection<Rental> Rentals { get; set; } = new List<Rental>();
-        public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
-        public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
-        public virtual ICollection<Penalty> Penalties { get; set; } = new List<Penalty>();
+        public virtual ICollection<Address> Addresses { get; set; } = [];
+        public virtual ICollection<Rental> Rentals { get; set; } = [];
+        public virtual ICollection<Review> Reviews { get; set; } = [];
+        public virtual ICollection<Document> Documents { get; set; } = [];
+        public virtual ICollection<Penalty> Penalties { get; set; } = [];
     }
 }
