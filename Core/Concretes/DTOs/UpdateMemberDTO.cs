@@ -1,7 +1,8 @@
 namespace Core.Concretes.DTOs.Member
 {
-    public class CreateMemberDTO
+    public class UpdateMemberDTO
     {
+        public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
@@ -11,7 +12,11 @@ namespace Core.Concretes.DTOs.Member
         public string? DriverLicenseNumber { get; set; }
         public DateTime? DriverLicenseExpiryDate { get; set; }
         public string? NationalIdNumber { get; set; }
-        public string Password { get; set; }
         public string? ProfileImageUrl { get; set; }
+        public bool IsVerified { get; set; }
+        public bool IsBlacklisted { get; set; }
+        public string? BlacklistReason { get; set; }
+        public DateTime? BlacklistDate { get; set; }
+        public bool Deleted { get; set; }
     }
 }
