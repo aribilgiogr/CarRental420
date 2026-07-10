@@ -11,9 +11,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.28" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Abstracts\IServices\" />
-    <Folder Include="Concretes\DTOs\" />
-  </ItemGroup>
-
 </Project>
