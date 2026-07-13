@@ -1,13 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CarRental420.Data.Contexts;
+using Core.Utils;
+using Microsoft.EntityFrameworkCore;
 using System.Collections;
 
-namespace Core.Utils
+namespace Data
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DbContext context;
+        private readonly ApplicationDbContext context;
 
-        public UnitOfWork(DbContext context)
+        public UnitOfWork(ApplicationDbContext context)
         {
             this.context = context;
         }

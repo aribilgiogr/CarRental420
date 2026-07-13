@@ -1,5 +1,6 @@
 using Core.Concretes.DTOs.Vehicle;
 using Core.Concretes.Entities;
+using Core.Concretes.Enums;
 using Core.Utils;
 
 namespace Business.Services
@@ -194,6 +195,41 @@ namespace Business.Services
                 UpdatedAt = entity.UpdatedAt,
                 Active = entity.Active
             };
+        }
+
+        public Task<IEnumerable<VehicleResponseDTO>> GetByTypeAsync(VehicleType vehicleType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<VehicleResponseDTO>> GetUnavailableVehiclesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<VehicleResponseDTO>> GetVehiclesRequiringInspectionAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> LicensePlateExistsAsync(string licensePlate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task MarkAsAvailableAsync(int vehicleId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task MarkAsUnavailableAsync(int vehicleId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task MarkForInspectionAsync(int vehicleId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -3,6 +3,7 @@ using Business.Services;
 using CarRental420.Data.Contexts;
 using Core.Concretes.Entities;
 using Core.Utils;
+using Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
