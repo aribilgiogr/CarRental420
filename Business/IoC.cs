@@ -1,4 +1,5 @@
-﻿using Business.Services;
+using Business.Profiles;
+using Business.Services;
 using CarRental420.Data.Contexts;
 using Core.Concretes.Entities;
 using Core.Utils;
@@ -21,6 +22,11 @@ namespace Business
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            // Profil, Yönetim ve Kimlik Doğrulama Servisleri
+            services.AddScoped<IMemberService, MemberService>();
+            services.AddScoped<IAuthService, AuthService>();
+
+            // Diğer İş Servisleri
             services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<ICampaignDetailService, CampaignDetailService>();
             services.AddScoped<ICampaignService, CampaignService>();
@@ -30,8 +36,20 @@ namespace Business
             services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IMaintenanceRecordService, MaintenanceRecordService>();
-            services.AddScoped<IPaymentService,PaymentService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IPenaltyService, PenaltyService>();
+            services.AddScoped<IRentalCampaignService, RentalCampaignService>();
+            services.AddScoped<IRentalService, RentalService>();
+            services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<IVehicleCategoryService, VehicleCategoryService>();
+            services.AddScoped<IVehicleImageService, VehicleImageService>();
+            services.AddScoped<IVehicleService, VehicleService>();
+
+            // AutoMapper Entegrasyonu (Eğer yoksa projeye eklenmesi gerekir)
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<GeneralProfiles>();
+            });
 
             return services;
         }

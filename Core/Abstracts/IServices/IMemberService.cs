@@ -8,7 +8,6 @@ namespace Business.Services
         Task<IEnumerable<MemberResponseDTO>> GetAllAsync();
         Task<IEnumerable<MemberResponseDTO>> GetBlacklistedMembersAsync();
         Task<IEnumerable<MemberResponseDTO>> GetVerifiedMembersAsync();
-        Task<MemberResponseDTO> CreateAsync(CreateMemberDTO dto);
         Task UpdateAsync(UpdateMemberDTO dto);
         Task DeleteAsync(string id);
         Task<bool> MemberExistsAsync(string id);

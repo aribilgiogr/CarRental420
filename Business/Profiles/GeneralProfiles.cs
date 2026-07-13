@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using Core.Concretes.DTOs.Address;
 using Core.Concretes.DTOs.Campaign;
 using Core.Concretes.DTOs.CampaignDetail;
@@ -26,113 +25,32 @@ namespace Business.Profiles
     {
         public GeneralProfiles()
         {
-            // Address
-            CreateMap<CreateAddressDTO, Address>();
-            CreateMap<UpdateAddressDTO, Address>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<Address, AddressResponseDTO>();
+            ConfigureMapping<Address, CreateAddressDTO, UpdateAddressDTO, AddressResponseDTO>();
+            ConfigureMapping<CampaignDetail, CreateCampaignDetailDTO, UpdateCampaignDetailDTO, CampaignDetailResponseDTO>();
+            ConfigureMapping<Campaign, CreateCampaignDTO, UpdateCampaignDTO, CampaignResponseDTO>();
+            ConfigureMapping<CampaignVehicle, CreateCampaignVehicleDTO, UpdateCampaignVehicleDTO, CampaignVehicleResponseDTO>();
+            ConfigureMapping<Document, CreateDocumentDTO, UpdateDocumentDTO, DocumentResponseDTO>();
+            ConfigureMapping<Insurance, CreateInsuranceDTO, UpdateInsuranceDTO, InsuranceResponseDTO>();
+            ConfigureMapping<Invoice, CreateInvoiceDTO, UpdateInvoiceDTO, InvoiceResponseDTO>();
+            ConfigureMapping<Location, CreateLocationDTO, UpdateLocationDTO, LocationResponseDTO>();
+            ConfigureMapping<MaintenanceRecord, CreateMaintenanceRecordDTO, UpdateMaintenanceRecordDTO, MaintenanceRecordResponseDTO>();
+            ConfigureMapping<Member, CreateMemberDTO, UpdateMemberDTO, MemberResponseDTO>();
+            ConfigureMapping<Payment, CreatePaymentDTO, UpdatePaymentDTO, PaymentResponseDTO>();
+            ConfigureMapping<Penalty, CreatePenaltyDTO, UpdatePenaltyDTO, PenaltyResponseDTO>();
+            ConfigureMapping<RentalCampaign, CreateRentalCampaignDTO, UpdateRentalCampaignDTO, RentalCampaignResponseDTO>();
+            ConfigureMapping<Rental, CreateRentalDTO, UpdateRentalDTO, RentalResponseDTO>();
+            ConfigureMapping<Review, CreateReviewDTO, UpdateReviewDTO, ReviewResponseDTO>();
+            ConfigureMapping<VehicleCategory, CreateVehicleCategoryDTO, UpdateVehicleCategoryDTO, VehicleCategoryResponseDTO>();
+            ConfigureMapping<VehicleImage, CreateVehicleImageDTO, UpdateVehicleImageDTO, VehicleImageResponseDTO>();
+            ConfigureMapping<Vehicle, CreateVehicleDTO, UpdateVehicleDTO, VehicleResponseDTO>();
+        }
 
-            // CampaignDetail
-            CreateMap<CreateCampaignDetailDTO, CampaignDetail>();
-            CreateMap<UpdateCampaignDetailDTO, CampaignDetail>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<CampaignDetail, CampaignDetailResponseDTO>();
-
-            // Campaign
-            CreateMap<CreateCampaignDTO, Campaign>();
-            CreateMap<UpdateCampaignDTO, Campaign>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<Campaign, CampaignResponseDTO>();
-
-            // CampaignVehicle
-            CreateMap<CreateCampaignVehicleDTO, CampaignVehicle>();
-            CreateMap<UpdateCampaignVehicleDTO, CampaignVehicle>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<CampaignVehicle, CampaignVehicleResponseDTO>();
-
-            // Document
-            CreateMap<CreateDocumentDTO, Document>();
-            CreateMap<UpdateDocumentDTO, Document>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<Document, DocumentResponseDTO>();
-
-            // Insurance
-            CreateMap<CreateInsuranceDTO, Insurance>();
-            CreateMap<UpdateInsuranceDTO, Insurance>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<Insurance, InsuranceResponseDTO>();
-
-            // Invoice
-            CreateMap<CreateInvoiceDTO, Invoice>();
-            CreateMap<UpdateInvoiceDTO, Invoice>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<Invoice, InvoiceResponseDTO>();
-
-            // Location
-            CreateMap<CreateLocationDTO, Location>();
-            CreateMap<UpdateLocationDTO, Location>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<Location, LocationResponseDTO>();
-
-            // MaintenanceRecord
-            CreateMap<CreateMaintenanceRecordDTO, MaintenanceRecord>();
-            CreateMap<UpdateMaintenanceRecordDTO, MaintenanceRecord>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<MaintenanceRecord, MaintenanceRecordResponseDTO>();
-
-            // Member
-            CreateMap<CreateMemberDTO, Member>();
-            CreateMap<UpdateMemberDTO, Member>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<Member, MemberResponseDTO>();
-
-            // Payment
-            CreateMap<CreatePaymentDTO, Payment>();
-            CreateMap<UpdatePaymentDTO, Payment>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<Payment, PaymentResponseDTO>();
-
-            // Penalty
-            CreateMap<CreatePenaltyDTO, Penalty>();
-            CreateMap<UpdatePenaltyDTO, Penalty>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<Penalty, PenaltyResponseDTO>();
-
-            // RentalCampaign
-            CreateMap<CreateRentalCampaignDTO, RentalCampaign>();
-            CreateMap<UpdateRentalCampaignDTO, RentalCampaign>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<RentalCampaign, RentalCampaignResponseDTO>();
-
-            // Rental
-            CreateMap<CreateRentalDTO, Rental>();
-            CreateMap<UpdateRentalDTO, Rental>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<Rental, RentalResponseDTO>();
-
-            // Review
-            CreateMap<CreateReviewDTO, Review>();
-            CreateMap<UpdateReviewDTO, Review>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<Review, ReviewResponseDTO>();
-
-            // VehicleCategory
-            CreateMap<CreateVehicleCategoryDTO, VehicleCategory>();
-            CreateMap<UpdateVehicleCategoryDTO, VehicleCategory>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<VehicleCategory, VehicleCategoryResponseDTO>();
-
-            // VehicleImage
-            CreateMap<CreateVehicleImageDTO, VehicleImage>();
-            CreateMap<UpdateVehicleImageDTO, VehicleImage>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<VehicleImage, VehicleImageResponseDTO>();
-
-            // Vehicle
-            CreateMap<CreateVehicleDTO, Vehicle>();
-            CreateMap<UpdateVehicleDTO, Vehicle>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<Vehicle, VehicleResponseDTO>();
+        private void ConfigureMapping<TEntity, TCreateDTO, TUpdateDTO, TResponseDTO>()
+        {
+            CreateMap<TCreateDTO, TEntity>();
+            CreateMap<TUpdateDTO, TEntity>()
+                .ForMember("UpdatedAt", opt => opt.MapFrom(src => DateTime.UtcNow));
+            CreateMap<TEntity, TResponseDTO>().ReverseMap();
         }
     }
 }

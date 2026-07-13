@@ -13,12 +13,6 @@ namespace Business.Services
             _unitOfWork = unitOfWork;
         }
 
-        public Task<MemberResponseDTO> CreateAsync(CreateMemberDTO dto)
-        {
-            // IdentityUser tabanlı şifreleme (UserManager) mekanizması sistemde tanımlı değil/bilinmiyor.
-            throw new NotImplementedException();
-        }
-
         public async Task UpdateAsync(UpdateMemberDTO dto)
         {
             var entity = await _unitOfWork.Repository<Member>().FindByIdAsync(dto.Id);
@@ -26,19 +20,12 @@ namespace Business.Services
 
             entity.FirstName = dto.FirstName;
             entity.LastName = dto.LastName;
-            entity.Email = dto.Email;
-            entity.PhoneNumber = dto.PhoneNumber;
             entity.PhoneNumber2 = dto.PhoneNumber2;
             entity.BirthDate = dto.BirthDate;
             entity.DriverLicenseNumber = dto.DriverLicenseNumber;
             entity.DriverLicenseExpiryDate = dto.DriverLicenseExpiryDate;
             entity.NationalIdNumber = dto.NationalIdNumber;
             entity.ProfileImageUrl = dto.ProfileImageUrl;
-            entity.IsVerified = dto.IsVerified;
-            entity.IsBlacklisted = dto.IsBlacklisted;
-            entity.BlacklistReason = dto.BlacklistReason;
-            entity.BlacklistDate = dto.BlacklistDate;
-            entity.Deleted = dto.Deleted;
             entity.UpdatedAt = DateTime.UtcNow;
 
             await _unitOfWork.Repository<Member>().UpdateOneAsync(entity);
@@ -52,7 +39,7 @@ namespace Business.Services
             {
                 entity.Deleted = true;
                 entity.UpdatedAt = DateTime.UtcNow;
-                
+
                 await _unitOfWork.Repository<Member>().UpdateOneAsync(entity);
                 await _unitOfWork.CommitAsync();
             }
@@ -110,7 +97,7 @@ namespace Business.Services
                 entity.BlacklistReason = reason;
                 entity.BlacklistDate = DateTime.UtcNow;
                 entity.UpdatedAt = DateTime.UtcNow;
-                
+
                 await _unitOfWork.Repository<Member>().UpdateOneAsync(entity);
                 await _unitOfWork.CommitAsync();
             }
@@ -125,7 +112,7 @@ namespace Business.Services
                 entity.BlacklistReason = null;
                 entity.BlacklistDate = null;
                 entity.UpdatedAt = DateTime.UtcNow;
-                
+
                 await _unitOfWork.Repository<Member>().UpdateOneAsync(entity);
                 await _unitOfWork.CommitAsync();
             }
