@@ -1,3 +1,4 @@
+using AutoMapper;
 using Core.Concretes.DTOs.Campaign;
 using Core.Concretes.Entities;
 using Core.Concretes.Enums;
@@ -8,70 +9,47 @@ namespace Business.Services
     public class CampaignService : ICampaignService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CampaignService(IUnitOfWork unitOfWork)
+        public CampaignService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
+        /// <summary>
+        /// Yeni bir kampanya oluşturur ve veritabanına kaydeder.
+        /// </summary>
+        /// <param name="dto">Kampanya oluşturmak için gerekli bilgiler</param>
+        /// <returns>Oluşturulan kampanyanın DTO şeklindeki gösterimi</returns>
         public async Task<CampaignResponseDTO> CreateAsync(CreateCampaignDTO dto)
         {
-            var entity = new Campaign
-            {
-                Name = dto.Name,
-                Description = dto.Description,
-                CampaignType = dto.CampaignType,
-                CampaignScope = dto.CampaignScope,
-                StartDate = dto.StartDate,
-                EndDate = dto.EndDate,
-                DiscountPercentage = dto.DiscountPercentage,
-                DiscountFixedAmount = dto.DiscountFixedAmount,
-                CouponCode = dto.CouponCode,
-                MaxUsageCount = dto.MaxUsageCount,
-                CurrentUsageCount = 0, 
-                MaxUsagePerMember = dto.MaxUsagePerMember,
-                MinimumRentalAmount = dto.MinimumRentalAmount,
-                TargetedVehicleType = dto.TargetedVehicleType,
-                IsActive = dto.IsActive,
-                CreatedBy = dto.CreatedBy,
-                CreatedAt = DateTime.UtcNow,
-                Active = true,
-                Deleted = false
-            };
-
+            var entity = _mapper.Map<Campaign>(dto);
             await _unitOfWork.Repository<Campaign>().InsertOneAsync(entity);
             await _unitOfWork.CommitAsync();
 
-            return MapToResponseDTO(entity);
+            return _mapper.Map<CampaignResponseDTO>(entity);
         }
 
+        /// <summary>
+        /// Mevcut bir kampanyayı günceller. Silinmiş kampanyalar güncellenemez.
+        /// </summary>
+        /// <param name="dto">Güncellenecek kampanyanın yeni bilgileri</param>
         public async Task UpdateAsync(UpdateCampaignDTO dto)
         {
             var entity = await _unitOfWork.Repository<Campaign>().FindByIdAsync(dto.Id);
             if (entity == null || entity.Deleted) return;
 
-            entity.Name = dto.Name;
-            entity.Description = dto.Description;
-            entity.CampaignType = dto.CampaignType;
-            entity.CampaignScope = dto.CampaignScope;
-            entity.StartDate = dto.StartDate;
-            entity.EndDate = dto.EndDate;
-            entity.DiscountPercentage = dto.DiscountPercentage;
-            entity.DiscountFixedAmount = dto.DiscountFixedAmount;
-            entity.CouponCode = dto.CouponCode;
-            entity.MaxUsageCount = dto.MaxUsageCount;
-            entity.MaxUsagePerMember = dto.MaxUsagePerMember;
-            entity.MinimumRentalAmount = dto.MinimumRentalAmount;
-            entity.TargetedVehicleType = dto.TargetedVehicleType;
-            entity.IsActive = dto.IsActive;
-            entity.UpdatedBy = dto.UpdatedBy;
-            entity.Active = dto.Active;
-            entity.UpdatedAt = DateTime.UtcNow;
+            entity = _mapper.Map<Campaign>(dto);
 
             await _unitOfWork.Repository<Campaign>().UpdateOneAsync(entity);
             await _unitOfWork.CommitAsync();
         }
 
+        /// <summary>
+        /// Bir kampanyayı soft delete yöntemiyle siler. Deleted bayrağını true olarak işaretler.
+        /// </summary>
+        /// <param name="id">Silinecek kampanyanın ID'si</param>
         public async Task DeleteAsync(int id)
         {
             var entity = await _unitOfWork.Repository<Campaign>().FindByIdAsync(id);
@@ -81,72 +59,122 @@ namespace Business.Services
                 entity.Active = false;
                 entity.IsActive = false;
                 entity.UpdatedAt = DateTime.UtcNow;
-                
+
                 await _unitOfWork.Repository<Campaign>().UpdateOneAsync(entity);
                 await _unitOfWork.CommitAsync();
             }
         }
 
+        /// <summary>
+        /// Belirtilen ID'ye sahip kampanyayı getirir. Silinmiş kampanyalar döndürülmez.
+        /// </summary>
+        /// <param name="id">Kampanyanın ID'si</param>
+        /// <returns>Bulunursa kampanya DTO'su, bulunamazsa null</returns>
         public async Task<CampaignResponseDTO?> GetByIdAsync(int id)
         {
             var entity = await _unitOfWork.Repository<Campaign>().FindByIdAsync(id);
             if (entity == null || entity.Deleted) return null;
 
-            return MapToResponseDTO(entity);
+            return _mapper.Map<CampaignResponseDTO>(entity);
         }
 
+        /// <summary>
+        /// Silinmemiş tüm kampanyaları getirir.
+        /// </summary>
+        /// <returns>Kampanya DTO'larının koleksiyonu</returns>
         public async Task<IEnumerable<CampaignResponseDTO>> GetAllAsync()
         {
             var items = await _unitOfWork.Repository<Campaign>().FindManyAsync(x => !x.Deleted);
-            return items.Select(MapToResponseDTO);
+            return _mapper.Map<IEnumerable<CampaignResponseDTO>>(items);
         }
 
+        /// <summary>
+        /// Aktif ve silinmemiş kampanyaları getirir.
+        /// </summary>
+        /// <returns>Aktif kampanya DTO'larının koleksiyonu</returns>
         public async Task<IEnumerable<CampaignResponseDTO>> GetActiveCampaignsAsync()
         {
             var items = await _unitOfWork.Repository<Campaign>().FindManyAsync(x => !x.Deleted && x.IsActive);
-            return items.Select(MapToResponseDTO);
+            return _mapper.Map<IEnumerable<CampaignResponseDTO>>(items);
         }
 
+        /// <summary>
+        /// Belirtilen türdeki kampanyaları getirir (örn: TimeLimited, Unlimited).
+        /// </summary>
+        /// <param name="campaignType">Filtrelenecek kampanya türü</param>
+        /// <returns>Belirtilen türdeki kampanya DTO'larının koleksiyonu</returns>
         public async Task<IEnumerable<CampaignResponseDTO>> GetByTypeAsync(CampaignType campaignType)
         {
             var items = await _unitOfWork.Repository<Campaign>().FindManyAsync(x => !x.Deleted && x.CampaignType == campaignType);
-            return items.Select(MapToResponseDTO);
+            return _mapper.Map<IEnumerable<CampaignResponseDTO>>(items);
         }
 
+        /// <summary>
+        /// Belirtilen kapsamdaki kampanyaları getirir (örn: Local, Global).
+        /// </summary>
+        /// <param name="campaignScope">Filtrelenecek kampanya kapsamı</param>
+        /// <returns>Belirtilen kapsamdaki kampanya DTO'larının koleksiyonu</returns>
         public async Task<IEnumerable<CampaignResponseDTO>> GetByScopeAsync(CampaignScope campaignScope)
         {
             var items = await _unitOfWork.Repository<Campaign>().FindManyAsync(x => !x.Deleted && x.CampaignScope == campaignScope);
-            return items.Select(MapToResponseDTO);
+            return _mapper.Map<IEnumerable<CampaignResponseDTO>>(items);
         }
 
+        /// <summary>
+        /// Belirtilen kupon koduna sahip kampanyayı getirir.
+        /// </summary>
+        /// <param name="couponCode">Aranacak kupon kodu</param>
+        /// <returns>Bulunursa kampanya DTO'su, bulunamazsa null</returns>
         public async Task<CampaignResponseDTO?> GetByCouponCodeAsync(string couponCode)
         {
             var items = await _unitOfWork.Repository<Campaign>().FindManyAsync(x => !x.Deleted && x.CouponCode == couponCode);
             var entity = items.FirstOrDefault();
-            
-            return entity != null ? MapToResponseDTO(entity) : null;
+
+            return entity != null ? _mapper.Map<CampaignResponseDTO>(entity) : null;
         }
 
+        /// <summary>
+        /// Zaman sınırlı kampanyaları getirir.
+        /// </summary>
+        /// <returns>Zaman sınırlı kampanya DTO'larının koleksiyonu</returns>
         public async Task<IEnumerable<CampaignResponseDTO>> GetTimeBasedCampaignsAsync()
         {
             return await GetByTypeAsync(CampaignType.TimeLimited);
         }
 
+        /// <summary>
+        /// Sınırsız kampanyaları getirir (zaman sınırı olmayan).
+        /// </summary>
+        /// <returns>Sınırsız kampanya DTO'larının koleksiyonu</returns>
         public async Task<IEnumerable<CampaignResponseDTO>> GetUnlimitedCampaignsAsync()
         {
             return await GetByTypeAsync(CampaignType.Unlimited);
         }
 
+        /// <summary>
+        /// Belirtilen ID'ye sahip silinmemiş bir kampanyanın var olup olmadığını kontrol eder.
+        /// </summary>
+        /// <param name="id">Kontrol edilecek kampanyanın ID'si</param>
+        /// <returns>Kampanya varsa true, yoksa false</returns>
         public async Task<bool> CampaignExistsAsync(int id)
         {
             return await _unitOfWork.Repository<Campaign>().AnyAsync(x => x.Id == id && !x.Deleted);
         }
 
+        /// <summary>
+        /// Belirtilen kupon kodunun var olup olmadığını kontrol eder.
+        /// </summary>
+        /// <param name="couponCode">Kontrol edilecek kupon kodu</param>
+        /// <returns>Kupon kodu varsa true, yoksa false</returns>
         public async Task<bool> CouponCodeExistsAsync(string couponCode)
         {
             return await _unitOfWork.Repository<Campaign>().AnyAsync(x => x.CouponCode == couponCode && !x.Deleted);
         }
 
+        /// <summary>
+        /// Belirtilen kampanyayı aktif hale getirir.
+        /// </summary>
+        /// <param name="campaignId">Aktif hale getirilecek kampanyanın ID'si</param>
         public async Task ActivateCampaignAsync(int campaignId)
         {
             var entity = await _unitOfWork.Repository<Campaign>().FindByIdAsync(campaignId);
@@ -159,6 +187,10 @@ namespace Business.Services
             }
         }
 
+        /// <summary>
+        /// Belirtilen kampanyayı deaktif hale getirir.
+        /// </summary>
+        /// <param name="campaignId">Deaktif hale getirilecek kampanyanın ID'si</param>
         public async Task DeactivateCampaignAsync(int campaignId)
         {
             var entity = await _unitOfWork.Repository<Campaign>().FindByIdAsync(campaignId);
@@ -171,6 +203,13 @@ namespace Business.Services
             }
         }
 
+        /// <summary>
+        /// Belirtilen kampanya için kiralama fiyatına göre indirim miktarını hesaplar.
+        /// Sabit tutar ve yüzde indirimlerinin toplamını döndürür, fakat kiralama fiyatını aşamaz.
+        /// </summary>
+        /// <param name="campaignId">İndirim hesaplanacak kampanyanın ID'si</param>
+        /// <param name="rentalPrice">Kiralama fiyatı</param>
+        /// <returns>Hesaplanan indirim miktarı</returns>
         public async Task<decimal> CalculateDiscountAsync(int campaignId, decimal rentalPrice)
         {
             var campaign = await _unitOfWork.Repository<Campaign>().FindByIdAsync(campaignId);
@@ -182,7 +221,7 @@ namespace Business.Services
             {
                 discount += campaign.DiscountFixedAmount.Value;
             }
-            
+
             if (campaign.DiscountPercentage > 0)
             {
                 discount += (rentalPrice * campaign.DiscountPercentage) / 100;
@@ -191,23 +230,31 @@ namespace Business.Services
             return discount > rentalPrice ? rentalPrice : discount;
         }
 
+        /// <summary>
+        /// Belirtilen kampanyanın bir üye tarafından uygulanabilir olup olmadığını kontrol eder.
+        /// Kampanyanın aktif olması, minimum tutar, maksimum kullanım sayısı ve zaman aralığı kontrol edilir.
+        /// </summary>
+        /// <param name="campaignId">Kontrol edilecek kampanyanın ID'si</param>
+        /// <param name="memberId">Üyenin ID'si</param>
+        /// <param name="rentalAmount">Kiralama tutarı</param>
+        /// <returns>Kampanya uygulanabilirse true, yoksa false</returns>
         public async Task<bool> CanApplyCampaignAsync(int campaignId, string memberId, decimal rentalAmount)
         {
             var campaign = await _unitOfWork.Repository<Campaign>().FindByIdAsync(campaignId);
-            
-            if (campaign == null || campaign.Deleted || !campaign.IsActive) 
+
+            if (campaign == null || campaign.Deleted || !campaign.IsActive)
                 return false;
 
-            if (campaign.MinimumRentalAmount.HasValue && rentalAmount < campaign.MinimumRentalAmount.Value) 
+            if (campaign.MinimumRentalAmount.HasValue && rentalAmount < campaign.MinimumRentalAmount.Value)
                 return false;
 
-            if (campaign.MaxUsageCount.HasValue && campaign.CurrentUsageCount >= campaign.MaxUsageCount.Value) 
+            if (campaign.MaxUsageCount.HasValue && campaign.CurrentUsageCount >= campaign.MaxUsageCount.Value)
                 return false;
 
             if (campaign.CampaignType == CampaignType.TimeLimited)
             {
                 var now = DateTime.UtcNow;
-                if ((campaign.StartDate.HasValue && now < campaign.StartDate.Value) || 
+                if ((campaign.StartDate.HasValue && now < campaign.StartDate.Value) ||
                     (campaign.EndDate.HasValue && now > campaign.EndDate.Value))
                 {
                     return false;
@@ -219,6 +266,10 @@ namespace Business.Services
             return true;
         }
 
+        /// <summary>
+        /// Belirtilen kampanyanın kullanım sayısını bir artırır.
+        /// </summary>
+        /// <param name="campaignId">Kullanım sayısı artırılacak kampanyanın ID'si</param>
         public async Task IncrementUsageCountAsync(int campaignId)
         {
             var entity = await _unitOfWork.Repository<Campaign>().FindByIdAsync(campaignId);
@@ -226,54 +277,31 @@ namespace Business.Services
             {
                 entity.CurrentUsageCount = (entity.CurrentUsageCount ?? 0) + 1;
                 entity.UpdatedAt = DateTime.UtcNow;
-                
+
                 await _unitOfWork.Repository<Campaign>().UpdateOneAsync(entity);
                 await _unitOfWork.CommitAsync();
             }
         }
 
+        /// <summary>
+        /// Belirtilen kiralama tutarı için uygulanabilir kampanyaları getirir.
+        /// Minimum tutar, maksimum kullanım sayısı ve zaman aralığı koşullarını kontrol eder.
+        /// </summary>
+        /// <param name="rentalAmount">Kiralama tutarı</param>
+        /// <returns>Uygulanabilir kampanya DTO'larının koleksiyonu</returns>
         public async Task<IEnumerable<CampaignResponseDTO>> GetApplicableCampaignsAsync(decimal rentalAmount)
         {
             var now = DateTime.UtcNow;
-            
-            var items = await _unitOfWork.Repository<Campaign>().FindManyAsync(x => 
-                !x.Deleted && 
-                x.IsActive && 
+
+            var items = await _unitOfWork.Repository<Campaign>().FindManyAsync(x =>
+                !x.Deleted &&
+                x.IsActive &&
                 (!x.MinimumRentalAmount.HasValue || x.MinimumRentalAmount <= rentalAmount) &&
                 (!x.MaxUsageCount.HasValue || x.CurrentUsageCount < x.MaxUsageCount) &&
                 (x.CampaignType != CampaignType.TimeLimited || ((!x.StartDate.HasValue || x.StartDate <= now) && (!x.EndDate.HasValue || x.EndDate >= now)))
             );
 
-            return items.Select(MapToResponseDTO);
-        }
-
-        // Manuel Mapping Metodu
-        private static CampaignResponseDTO MapToResponseDTO(Campaign entity)
-        {
-            return new CampaignResponseDTO
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Description = entity.Description,
-                CampaignType = entity.CampaignType,
-                CampaignScope = entity.CampaignScope,
-                StartDate = entity.StartDate,
-                EndDate = entity.EndDate,
-                DiscountPercentage = entity.DiscountPercentage,
-                DiscountFixedAmount = entity.DiscountFixedAmount,
-                CouponCode = entity.CouponCode,
-                MaxUsageCount = entity.MaxUsageCount,
-                CurrentUsageCount = entity.CurrentUsageCount,
-                MaxUsagePerMember = entity.MaxUsagePerMember,
-                MinimumRentalAmount = entity.MinimumRentalAmount,
-                TargetedVehicleType = entity.TargetedVehicleType,
-                IsActive = entity.IsActive,
-                CreatedBy = entity.CreatedBy,
-                UpdatedBy = entity.UpdatedBy,
-                CreatedAt = entity.CreatedAt,
-                UpdatedAt = entity.UpdatedAt,
-                Active = entity.Active
-            };
+            return _mapper.Map<IEnumerable<CampaignResponseDTO>>(items);
         }
     }
 }

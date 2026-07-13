@@ -1,3 +1,4 @@
+using AutoMapper;
 using Core.Concretes.DTOs.CampaignDetail;
 using Core.Concretes.Entities;
 using Core.Utils;
@@ -7,29 +8,20 @@ namespace Business.Services
     public class CampaignDetailService : ICampaignDetailService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CampaignDetailService(IUnitOfWork unitOfWork)
+        public CampaignDetailService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<CampaignDetailResponseDTO> CreateAsync(CreateCampaignDetailDTO dto)
         {
-            var entity = new CampaignDetail
-            {
-                CampaignId = dto.CampaignId,
-                DetailType = dto.DetailType,
-                Content = dto.Content,
-                DisplayOrder = dto.DisplayOrder,
-                Active = true,
-                Deleted = false,
-                CreatedAt = DateTime.UtcNow
-            };
-
+            var entity = _mapper.Map<CampaignDetail>(dto);
             await _unitOfWork.Repository<CampaignDetail>().InsertOneAsync(entity);
             await _unitOfWork.CommitAsync();
-
-            return MapToResponseDTO(entity);
+            return _mapper.Map<CampaignDetailResponseDTO>(entity);
         }
 
         public async Task UpdateAsync(UpdateCampaignDetailDTO dto)
@@ -37,12 +29,7 @@ namespace Business.Services
             var entity = await _unitOfWork.Repository<CampaignDetail>().FindByIdAsync(dto.Id);
             if (entity == null || entity.Deleted) return;
 
-            entity.CampaignId = dto.CampaignId;
-            entity.DetailType = dto.DetailType;
-            entity.Content = dto.Content;
-            entity.DisplayOrder = dto.DisplayOrder;
-            entity.Active = dto.Active;
-            entity.UpdatedAt = DateTime.UtcNow;
+            entity = _mapper.Map<CampaignDetail>(dto);
 
             await _unitOfWork.Repository<CampaignDetail>().UpdateOneAsync(entity);
             await _unitOfWork.CommitAsync();
@@ -84,13 +71,13 @@ namespace Business.Services
         public async Task<IEnumerable<CampaignDetailResponseDTO>> GetAllAsync()
         {
             var items = await _unitOfWork.Repository<CampaignDetail>().FindManyAsync(x => !x.Deleted);
-            return items.Select(MapToResponseDTO);
+            return _mapper.Map<IEnumerable<CampaignDetailResponseDTO>>(items);
         }
 
         public async Task<IEnumerable<CampaignDetailResponseDTO>> GetByCampaignAsync(int campaignId)
         {
             var items = await _unitOfWork.Repository<CampaignDetail>().FindManyAsync(x => x.CampaignId == campaignId && !x.Deleted);
-            return items.Select(MapToResponseDTO);
+            return _mapper.Map<IEnumerable<CampaignDetailResponseDTO>>(items);
         }
 
         public async Task<CampaignDetailResponseDTO?> GetByIdAsync(int id)
@@ -98,28 +85,13 @@ namespace Business.Services
             var entity = await _unitOfWork.Repository<CampaignDetail>().FindByIdAsync(id);
             if (entity == null || entity.Deleted) return null;
 
-            return MapToResponseDTO(entity);
+            return _mapper.Map<CampaignDetailResponseDTO>(entity);
         }
 
         public async Task<IEnumerable<CampaignDetailResponseDTO>> GetByTypeAsync(string detailType)
         {
             var items = await _unitOfWork.Repository<CampaignDetail>().FindManyAsync(x => x.DetailType == detailType && !x.Deleted);
-            return items.Select(MapToResponseDTO);
-        }
-
-        private static CampaignDetailResponseDTO MapToResponseDTO(CampaignDetail entity)
-        {
-            return new CampaignDetailResponseDTO
-            {
-                Id = entity.Id,
-                CampaignId = entity.CampaignId,
-                DetailType = entity.DetailType,
-                Content = entity.Content,
-                DisplayOrder = entity.DisplayOrder,
-                CreatedAt = entity.CreatedAt,
-                UpdatedAt = entity.UpdatedAt,
-                Active = entity.Active
-            };
+            return _mapper.Map<IEnumerable<CampaignDetailResponseDTO>>(items);
         }
     }
 }

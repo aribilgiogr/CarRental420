@@ -98,7 +98,6 @@ namespace Business.Services
             if (entity == null || entity.Deleted) return;
 
             entity = _mapper.Map<Address>(dto);
-            entity.UpdatedAt = DateTime.UtcNow;
 
             await _unitOfWork.Repository<Address>().UpdateOneAsync(entity);
             await _unitOfWork.CommitAsync();
