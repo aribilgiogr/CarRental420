@@ -1,0 +1,44 @@
+@model LoginViewModel
+@{
+	Layout = "~/views/shared/_authlayout.cshtml";
+	ViewData["Title"] = "Rental420'ye Hoş Geldiniz! 👋";
+	ViewData["Description"] = "Lütfen hesabınıza giriş yapın ve kiralama deneyimine başlayın.";
+}
+
+<form asp-action="login" asp-controller="account" method="POST">
+	@Html.AntiForgeryToken()
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<div class="mb-3">
+		<label asp-for="Email" class="form-label"></label>
+		<input asp-for="Email" class="form-control" />
+		<span asp-validation-for="Email" class="text-danger"></span>
+	</div>
+	<div class="mb-3 form-password-toggle">
+		<div class="d-flex justify-content-between">
+			<label class="form-label" asp-for="Password"></label>
+			<a href="#">
+				<small>Şifremi Unuttum?</small>
+			</a>
+		</div>
+		<div class="input-group input-group-merge">
+			<input asp-for="Password" class="form-control" />
+			<span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+		</div>
+		<span asp-validation-for="Password" class="text-danger"></span>
+	</div>
+	<div class="mb-3">
+		<div class="form-check">
+			<input class="form-check-input" asp-for="RememberMe" />
+			<label class="form-check-label" asp-for="RememberMe"></label>
+		</div>
+	</div>
+	<div class="mb-3">
+		<button class="btn btn-primary d-grid w-100" type="submit">Giriş Yap</button>
+	</div>
+</form>
+
+<p class="text-center">
+	<a asp-action="register" asp-controller="account">
+		<span>Hesap Oluştur</span>
+	</a>
+</p>

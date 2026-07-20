@@ -1,0 +1,23 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Hata";
+}
+
+<h1 class="text-danger">Hata.</h1>
+<h2 class="text-danger">İsteğiniz işlenirken bir hata oluştu.</h2>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>İstek ID (Request ID):</strong> <code>@Model.RequestId</code>
+    </p>
+}
+
+<h3>Geliştirme Modu</h3>
+<p>
+    Şu anda <strong>Geliştirme (Development)</strong> ortamındasınız, bu nedenle oluşan hata hakkında daha detaylı bilgiler görebilirsiniz.
+</p>
+<p>
+    <strong>Canlı ortamlarda Geliştirme (Development) modu aktif olmamalıdır.</strong>
+    Aksi halde son kullanıcılara sistemle ilgili hassas veriler sızabilir.
+</p>
