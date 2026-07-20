@@ -1,0 +1,91 @@
+@model Core.Concretes.DTOs.MaintenanceRecord.CreateMaintenanceRecordDTO
+@{
+    ViewData["Title"] = "Yeni Bakım Kaydı Ekle";
+}
+
+<div class="row">
+    <div class="col-xl-8 mx-auto">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Yeni Bakım Kaydı</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    
+                    <h6 class="mb-3">Temel Bilgiler</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="VehicleId" class="form-label">Araç</label>
+                            <select asp-for="VehicleId" asp-items="ViewBag.Vehicles" class="form-select" required>
+                                <option value="">-- Araç Seçin --</option>
+                            </select>
+                            <span asp-validation-for="VehicleId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="MaintenanceType" class="form-label">Bakım Türü</label>
+                            <select asp-for="MaintenanceType" class="form-select" required>
+                                <option value="Periyodik Bakım">Periyodik Bakım</option>
+                                <option value="Hasar Onarımı">Hasar Onarımı</option>
+                                <option value="Lastik Değişimi">Lastik Değişimi</option>
+                                <option value="Muayene">Muayene</option>
+                                <option value="Diğer">Diğer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Açıklama</label>
+                        <textarea asp-for="Description" class="form-control" rows="2" required></textarea>
+                    </div>
+
+                    <h6 class="mb-3 mt-4">Tarih & Maliyet</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="MaintenanceDate" class="form-label">Bakım Tarihi</label>
+                            <input asp-for="MaintenanceDate" type="date" class="form-control" required />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="CompletionDate" class="form-label">Tahmini / Gerçek Bitiş</label>
+                            <input asp-for="CompletionDate" type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Cost" class="form-label">Maliyet (₺)</label>
+                            <input asp-for="Cost" type="number" step="0.01" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <h6 class="mb-3 mt-4">Detaylar</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="ServiceProvider" class="form-label">Servis / Sağlayıcı</label>
+                            <input asp-for="ServiceProvider" class="form-control" placeholder="Örn: Bosch Car Service" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="MaintenanceStatus" class="form-label">Durum</label>
+                            <select asp-for="MaintenanceStatus" class="form-select">
+                                <option value="Beklemede">Beklemede</option>
+                                <option value="Devam Ediyor">Devam Ediyor</option>
+                                <option value="Tamamlandı">Tamamlandı</option>
+                                <option value="İptal Edildi">İptal Edildi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Odometer" class="form-label">Kilometre (Bakım Anında)</label>
+                            <input asp-for="Odometer" type="number" class="form-control" />
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Notes" class="form-label">Notlar</label>
+                        <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

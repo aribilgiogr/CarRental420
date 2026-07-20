@@ -1,0 +1,165 @@
+@model Core.Concretes.DTOs.Vehicle.UpdateVehicleDTO
+@using Core.Concretes.Enums
+@{
+    ViewData["Title"] = "Araç Düzenle";
+}
+
+<div class="row">
+    <div class="col-xl-8 mx-auto">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Araç Düzenle</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    
+                    <h6 class="mb-3">Genel Bilgiler</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="LicensePlate" class="form-label">Plaka</label>
+                            <input asp-for="LicensePlate" class="form-control" required />
+                            <span asp-validation-for="LicensePlate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Brand" class="form-label">Marka</label>
+                            <input asp-for="Brand" class="form-control" required />
+                            <span asp-validation-for="Brand" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Model" class="form-label">Model</label>
+                            <input asp-for="Model" class="form-control" required />
+                            <span asp-validation-for="Model" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Year" class="form-label">Yıl</label>
+                            <input asp-for="Year" type="number" class="form-control" required />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Kilometers" class="form-label">Kilometre</label>
+                            <input asp-for="Kilometers" type="number" class="form-control" required />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="PricePerDay" class="form-label">Günlük Fiyat (₺)</label>
+                            <input asp-for="PricePerDay" type="number" step="0.01" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <h6 class="mb-3 mt-4">Kategori ve Lokasyon</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="VehicleType" class="form-label">Araç Tipi</label>
+                            <select asp-for="VehicleType" asp-items="Html.GetEnumSelectList<VehicleType>()" class="form-select" required></select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="VehicleCategoryId" class="form-label">Kategori</label>
+                            <select asp-for="VehicleCategoryId" asp-items="ViewBag.Categories" class="form-select" required>
+                                <option value="">-- Kategori Seçin --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="LocationId" class="form-label">Bulunduğu Şube</label>
+                            <select asp-for="LocationId" asp-items="ViewBag.Locations" class="form-select" required>
+                                <option value="">-- Şube Seçin --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h6 class="mb-3 mt-4">Teknik Özellikler</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Color" class="form-label">Renk</label>
+                            <input asp-for="Color" class="form-control" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Seats" class="form-label">Koltuk Sayısı</label>
+                            <input asp-for="Seats" type="number" class="form-control" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="FuelTankCapacity" class="form-label">Yakıt Deposu (Litre)</label>
+                            <input asp-for="FuelTankCapacity" type="number" step="any" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="FuelType" class="form-label">Yakıt Tipi</label>
+                            <select asp-for="FuelType" class="form-select">
+                                <option value="Benzin">Benzin</option>
+                                <option value="Dizel">Dizel</option>
+                                <option value="Elektrik">Elektrik</option>
+                                <option value="Hibrit">Hibrit</option>
+                                <option value="LPG">LPG</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="TransmissionType" class="form-label">Vites Tipi</label>
+                            <select asp-for="TransmissionType" class="form-select">
+                                <option value="Manuel">Manuel</option>
+                                <option value="Otomatik">Otomatik</option>
+                                <option value="Yarı Otomatik">Yarı Otomatik</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h6 class="mb-3 mt-4">Ruhsat & Sigorta</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="VIN" class="form-label">Şasi No (VIN)</label>
+                            <input asp-for="VIN" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="EngineNumber" class="form-label">Motor No</label>
+                            <input asp-for="EngineNumber" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" asp-for="HasInsurance">
+                                <label class="form-check-label" for="HasInsurance">Sigortası Var</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="InsuranceExpiryDate" class="form-label">Sigorta Bitiş Tarihi</label>
+                            <input asp-for="InsuranceExpiryDate" type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" asp-for="RequiresInspection">
+                                <label class="form-check-label" for="RequiresInspection">Muayene Gerekiyor</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="mb-3 mt-4">Durum ve Notlar</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsAvailable">
+                                <label class="form-check-label" for="IsAvailable">Kiralanmaya Müsait</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" asp-for="Active">
+                                <label class="form-check-label" for="Active">Araç Aktif Mi?</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Notes" class="form-label">Notlar</label>
+                        <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
+                        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

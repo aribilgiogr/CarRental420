@@ -1,0 +1,106 @@
+@model Core.Concretes.DTOs.Vehicle.VehicleResponseDTO
+@{
+    ViewData["Title"] = "Araç Detayları";
+}
+
+<div class="row">
+    <!-- Araç Profil Kartı -->
+    <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="user-avatar-section">
+                    <div class="d-flex align-items-center flex-column">
+                        <img class="img-fluid rounded my-4" src="~/img/elements/12.jpg" height="110" width="110" alt="Araç Resmi" />
+                        <div class="user-info text-center">
+                            <h4 class="mb-2">@Model.LicensePlate</h4>
+                            <span class="badge bg-label-secondary">@Model.Brand @Model.Model</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-around flex-wrap my-4 py-3">
+                    <div class="d-flex align-items-start me-4 mt-3 gap-3">
+                        <span class="badge bg-label-primary p-2 rounded"><i class='bx bx-check bx-sm'></i></span>
+                        <div>
+                            <h5 class="mb-0">@Model.PricePerDay.ToString("C")</h5>
+                            <span>Günlük Fiyat</span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start mt-3 gap-3">
+                        <span class="badge bg-label-primary p-2 rounded"><i class='bx bx-tachometer bx-sm'></i></span>
+                        <div>
+                            <h5 class="mb-0">@Model.Kilometers.ToString("N0")</h5>
+                            <span>Kilometre</span>
+                        </div>
+                    </div>
+                </div>
+                <h5 class="pb-2 border-bottom mb-4">Detaylar</h5>
+                <div class="info-container">
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <span class="fw-bold me-2">Durum:</span>
+                            @if(Model.IsAvailable && Model.Active) { <span class="badge bg-label-success">Müsait</span> }
+                            else { <span class="badge bg-label-warning">Kirada / Pasif</span> }
+                        </li>
+                        <li class="mb-3">
+                            <span class="fw-bold me-2">Araç Tipi:</span>
+                            <span>@Model.VehicleType.ToString()</span>
+                        </li>
+                        <li class="mb-3">
+                            <span class="fw-bold me-2">Vites:</span>
+                            <span>@Model.TransmissionType</span>
+                        </li>
+                        <li class="mb-3">
+                            <span class="fw-bold me-2">Yakıt:</span>
+                            <span>@Model.FuelType</span>
+                        </li>
+                        <li class="mb-3">
+                            <span class="fw-bold me-2">Kapasite:</span>
+                            <span>@Model.Seats Koltuk</span>
+                        </li>
+                    </ul>
+                    <div class="d-flex justify-content-center pt-3">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-3">Düzenle</a>
+                        <a asp-action="Index" class="btn btn-label-secondary">Geri Dön</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Araç Sekmeleri (Bakımlar vs.) -->
+    <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
+        <ul class="nav nav-pills flex-column flex-md-row mb-3">
+            <li class="nav-item"><a class="nav-link active" href="javascript:void(0);"><i class="bx bx-wrench me-1"></i> Bakım Kayıtları</a></li>
+            <li class="nav-item"><a class="nav-link" href="javascript:void(0);"><i class="bx bx-photo-album me-1"></i> Görseller</a></li>
+            <li class="nav-item"><a class="nav-link" href="javascript:void(0);"><i class="bx bx-key me-1"></i> Kiralama Geçmişi</a></li>
+        </ul>
+        <div class="card mb-4">
+            <h5 class="card-header">Ruhsat & Teknik Bilgiler</h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Renk:</strong> @Model.Color</p>
+                        <p><strong>Yıl:</strong> @Model.Year</p>
+                        <p><strong>Şasi No:</strong> @Model.VIN</p>
+                        <p><strong>Motor No:</strong> @Model.EngineNumber</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Yakıt Deposu:</strong> @Model.FuelTankCapacity Lt</p>
+                        <p><strong>Sigorta:</strong> @(Model.HasInsurance ? "Var" : "Yok")</p>
+                        <p><strong>Sigorta Bitiş:</strong> @Model.InsuranceExpiryDate?.ToShortDateString()</p>
+                        <p><strong>Muayene Gerekiyor Mu?:</strong> @(Model.RequiresInspection ? "Evet" : "Hayır")</p>
+                    </div>
+                </div>
+                @if(!string.IsNullOrEmpty(Model.Notes))
+                {
+                    <div class="mt-3">
+                        <strong>Notlar:</strong>
+                        <p class="text-muted">@Model.Notes</p>
+                    </div>
+                }
+            </div>
+        </div>
+        
+        <!-- İleride buraya bakım kayıtları tablosu eklenebilir -->
+    </div>
+</div>

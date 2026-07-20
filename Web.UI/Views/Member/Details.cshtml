@@ -1,0 +1,285 @@
+@model Core.Concretes.DTOs.Member.MemberResponseDTO
+@{
+    ViewData["Title"] = "Üye Profili";
+}
+
+<div class="row">
+    <!-- Profil Kartı -->
+    <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="user-avatar-section">
+                    <div class="d-flex align-items-center flex-column">
+                        <img class="img-fluid rounded my-4" src="@(!string.IsNullOrEmpty(Model.ProfileImageUrl) ? Model.ProfileImageUrl : "/img/avatars/1.png")" height="110" width="110" alt="Kullanıcı Resmi" />
+                        <div class="user-info text-center">
+                            <h4 class="mb-2">@Model.FirstName @Model.LastName</h4>
+                            <span class="badge bg-label-secondary">Müşteri</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-around flex-wrap my-4 py-3">
+                    <div class="d-flex align-items-start me-4 mt-3 gap-3">
+                        <span class="badge bg-label-primary p-2 rounded"><i class='bx bx-check bx-sm'></i></span>
+                        <div>
+                            <h5 class="mb-0">Doğrulama</h5>
+                            <span>@(Model.IsVerified ? "Onaylı" : "Bekliyor")</span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start mt-3 gap-3">
+                        <span class="badge bg-label-danger p-2 rounded"><i class='bx bx-x bx-sm'></i></span>
+                        <div>
+                            <h5 class="mb-0">Kara Liste</h5>
+                            <span>@(Model.IsBlacklisted ? "Evet" : "Hayır")</span>
+                        </div>
+                    </div>
+                </div>
+                <h5 class="pb-2 border-bottom mb-4">Detaylar</h5>
+                <div class="info-container">
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <span class="fw-bold me-2">E-Posta:</span>
+                            <span>@Model.Email</span>
+                        </li>
+                        <li class="mb-3">
+                            <span class="fw-bold me-2">Telefon:</span>
+                            <span>@Model.PhoneNumber</span>
+                        </li>
+                        <li class="mb-3">
+                            <span class="fw-bold me-2">T.C. Kimlik:</span>
+                            <span>@(Model.NationalIdNumber ?? "Belirtilmemiş")</span>
+                        </li>
+                        <li class="mb-3">
+                            <span class="fw-bold me-2">Ehliyet No:</span>
+                            <span>@(Model.DriverLicenseNumber ?? "Belirtilmemiş")</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="d-flex justify-content-center pt-3 gap-2">
+                        @if (!Model.IsVerified)
+                        {
+                            <form asp-action="VerifyMember" asp-route-id="@Model.Id" method="post">
+                                <button type="submit" class="btn btn-success">Doğrula</button>
+                            </form>
+                        }
+                        @if (!Model.IsBlacklisted)
+                        {
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#blacklistModal">Kara Listeye Al</button>
+                        }
+                        else
+                        {
+                            <form asp-action="UnblacklistMember" asp-route-id="@Model.Id" method="post">
+                                <button type="submit" class="btn btn-warning">Kara Listeden Çıkar</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yan Bilgiler -->
+    <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
+        <ul class="nav nav-pills flex-column flex-md-row mb-3" role="tablist">
+            <li class="nav-item">
+                <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-rentals" aria-controls="navs-rentals" aria-selected="true"><i class="bx bx-car me-1"></i> Kiralamalar</button>
+            </li>
+            <li class="nav-item">
+                <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-invoices" aria-controls="navs-invoices" aria-selected="false"><i class="bx bx-receipt me-1"></i> Faturalar</button>
+            </li>
+            <li class="nav-item">
+                <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-reviews" aria-controls="navs-reviews" aria-selected="false"><i class="bx bx-star me-1"></i> Değerlendirmeler</button>
+            </li>
+        </ul>
+        
+        @if (Model.IsBlacklisted)
+        {
+            <div class="alert alert-danger" role="alert">
+                <h6 class="alert-heading fw-bold mb-1"><i class="bx bx-error-alt"></i> Bu müşteri kara listede!</h6>
+                <p class="mb-0">Sebep: @Model.BlacklistReason</p>
+                <small>Tarih: @Model.BlacklistDate?.ToShortDateString()</small>
+            </div>
+        }
+
+        <div class="tab-content p-0 bg-transparent shadow-none">
+            <!-- Rentals Tab -->
+            <div class="tab-pane fade show active" id="navs-rentals" role="tabpanel">
+                <div class="card mb-4">
+                    <h5 class="card-header">Kiralama Geçmişi</h5>
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Kayıt No</th>
+                                    <th>Başlangıç</th>
+                                    <th>Bitiş</th>
+                                    <th>Durum</th>
+                                    <th>Tutar</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-border-bottom-0">
+                                @if (ViewBag.Rentals != null)
+                                {
+                                    var rentals = ViewBag.Rentals as IEnumerable<Core.Concretes.DTOs.Rental.RentalResponseDTO>;
+                                    if (rentals != null && rentals.Any())
+                                    {
+                                        foreach (var item in rentals.OrderByDescending(x => x.RentalStartDate))
+                                        {
+                                            <tr>
+                                                <td><strong>#@item.Id</strong></td>
+                                                <td>@item.RentalStartDate.ToShortDateString()</td>
+                                                <td>@item.RentalEndDate.ToShortDateString()</td>
+                                                <td>
+                                                    @if(item.RentalStatus == "Aktif")
+                                                    {
+                                                        <span class="badge bg-label-success">@item.RentalStatus</span>
+                                                    }
+                                                    else if(item.RentalStatus == "Tamamlandı")
+                                                    {
+                                                        <span class="badge bg-label-secondary">@item.RentalStatus</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-label-warning">@item.RentalStatus</span>
+                                                    }
+                                                </td>
+                                                <td>@item.FinalPrice?.ToString("C2")</td>
+                                                <td>
+                                                    <a class="btn btn-sm btn-outline-primary" asp-controller="Rental" asp-action="Details" asp-route-id="@item.Id">Detay</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td colspan="6" class="text-center text-muted">Henüz kiralama bulunmuyor.</td></tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoices Tab -->
+            <div class="tab-pane fade" id="navs-invoices" role="tabpanel">
+                <div class="card mb-4">
+                    <h5 class="card-header">Faturalar</h5>
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fatura No</th>
+                                    <th>Tarih</th>
+                                    <th>Durum</th>
+                                    <th>Tutar</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-border-bottom-0">
+                                @if (ViewBag.Invoices != null)
+                                {
+                                    var invoices = ViewBag.Invoices as IEnumerable<Core.Concretes.DTOs.Invoice.InvoiceResponseDTO>;
+                                    if (invoices != null && invoices.Any())
+                                    {
+                                        foreach (var item in invoices.OrderByDescending(x => x.InvoiceDate))
+                                        {
+                                            <tr>
+                                                <td><strong>@item.InvoiceNumber</strong><br/><small class="text-muted">Kir. #@item.RentalId</small></td>
+                                                <td>@item.InvoiceDate.ToShortDateString()</td>
+                                                <td>
+                                                    @if(item.InvoiceStatus == "Ödendi")
+                                                    {
+                                                        <span class="badge bg-label-success">@item.InvoiceStatus</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-label-danger">@item.InvoiceStatus</span>
+                                                    }
+                                                </td>
+                                                <td>@item.TotalAmount.ToString("C2")</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td colspan="4" class="text-center text-muted">Fatura kaydı bulunmuyor.</td></tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Tab -->
+            <div class="tab-pane fade" id="navs-reviews" role="tabpanel">
+                <div class="card mb-4">
+                    <h5 class="card-header">Değerlendirmeler</h5>
+                    <div class="card-body">
+                        @if (ViewBag.Reviews != null)
+                        {
+                            var reviews = ViewBag.Reviews as IEnumerable<Core.Concretes.DTOs.Review.ReviewResponseDTO>;
+                            if (reviews != null && reviews.Any())
+                            {
+                                foreach (var item in reviews.OrderByDescending(x => x.ReviewDate))
+                                {
+                                    <div class="d-flex mb-4 pb-2 border-bottom">
+                                        <div class="flex-shrink-0 me-3">
+                                            <div class="avatar avatar-sm">
+                                                <span class="avatar-initial rounded-circle bg-label-primary">@item.Rating</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 row">
+                                            <div class="col-sm-9 mb-sm-0 mb-2">
+                                                <h6 class="mb-0">@item.Title</h6>
+                                                <small class="text-muted">Tarih: @item.ReviewDate.ToShortDateString() | Kiralama #@item.RentalId</small>
+                                                <p class="mt-2 mb-0">@item.Comment</p>
+                                            </div>
+                                            <div class="col-sm-3 text-sm-end">
+                                                <span class="text-warning">
+                                                    @for(int i=0; i<item.Rating; i++){ <i class="bx bxs-star"></i> }
+                                                    @for(int i=item.Rating; i<5; i++){ <i class="bx bx-star"></i> }
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-muted text-center mb-0">Bu kullanıcı henüz değerlendirme yapmamış.</p>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Blacklist Modal -->
+<div class="modal fade" id="blacklistModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Müşteriyi Kara Listeye Al</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="BlacklistMember" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="reason" class="form-label">Kara Liste Sebebi</label>
+                            <textarea id="reason" name="reason" class="form-control" placeholder="Araç hasarlı teslim edildi, ödeme gecikti vb." required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Onayla</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

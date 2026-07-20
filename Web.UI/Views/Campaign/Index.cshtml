@@ -1,0 +1,99 @@
+@model IEnumerable<Core.Concretes.DTOs.Campaign.CampaignResponseDTO>
+@{
+    ViewData["Title"] = "Kampanyalar";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Aktif ve Geçmiş Kampanyalar</h5>
+        <a asp-action="Create" class="btn btn-primary">Yeni Kampanya Oluştur</a>
+    </div>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Kampanya Adı / Kod</th>
+                    <th>İndirim</th>
+                    <th>Tarih Aralığı</th>
+                    <th>Kullanım</th>
+                    <th>Durum</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.Name</strong>
+                                @if (!string.IsNullOrEmpty(item.CouponCode))
+                                {
+                                    <div class="text-muted small">Kod: <span class="badge bg-label-dark">@item.CouponCode</span></div>
+                                }
+                            </td>
+                            <td>
+                                @if (item.DiscountPercentage > 0)
+                                {
+                                    <span class="text-primary">%@item.DiscountPercentage İndirim</span><br/>
+                                }
+                                @if (item.DiscountFixedAmount.HasValue && item.DiscountFixedAmount > 0)
+                                {
+                                    <span class="text-success">@item.DiscountFixedAmount?.ToString("C") İndirim</span>
+                                }
+                            </td>
+                            <td>
+                                <div>@(item.StartDate?.ToShortDateString() ?? "-")</div>
+                                <div class="text-muted small">@(item.EndDate?.ToShortDateString() ?? "-")</div>
+                            </td>
+                            <td>
+                                @item.CurrentUsageCount / @(item.MaxUsageCount.HasValue ? item.MaxUsageCount.ToString() : "Sınırsız")
+                            </td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge bg-label-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-label-secondary">Pasif</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        @if (item.IsActive)
+                                        {
+                                            <form asp-action="Deactivate" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                                <button type="submit" class="dropdown-item text-warning"><i class="bx bx-pause-circle me-1"></i> Durdur</button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="Activate" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                                <button type="submit" class="dropdown-item text-success"><i class="bx bx-play-circle me-1"></i> Başlat</button>
+                                            </form>
+                                        }
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Bu kampanyayı silmek istediğinize emin misiniz?');">
+                                            <button type="submit" class="dropdown-item text-danger"><i class="bx bx-trash me-1"></i> Sil</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center">Kayıtlı kampanya bulunamadı.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

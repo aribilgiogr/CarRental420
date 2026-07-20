@@ -1,0 +1,63 @@
+@model IEnumerable<Core.Concretes.DTOs.Insurance.InsuranceResponseDTO>
+@{
+    ViewData["Title"] = "Sigorta Poliçeleri";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Araç Sigortaları & Kasko Poliçeleri</h5>
+        <a asp-action="Create" class="btn btn-primary">Yeni Sigorta Poliçesi Ekle</a>
+    </div>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Paket Adı</th>
+                    <th>Kapsam Limiti</th>
+                    <th>Muafiyet (Deductible)</th>
+                    <th>Günlük Ücret</th>
+                    <th>Otomatik Dahil?</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.Name</strong>
+                                <div class="text-muted small">@item.Description</div>
+                            </td>
+                            <td>@item.CoverageAmount.ToString("C")</td>
+                            <td>@item.Deductible.ToString("C")</td>
+                            <td>@item.DailyPrice.ToString("C")</td>
+                            <td>
+                                @if(item.IsIncludedByDefault)
+                                {
+                                    <span class="badge bg-label-success">Evet</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-label-secondary">Hayır</span>
+                                }
+                            </td>
+                            <td>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Bu sigorta paketini silmek istediğinize emin misiniz?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bx bx-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center">Kayıtlı sigorta poliçesi bulunamadı.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,75 @@
+@model Core.Concretes.DTOs.Document.CreateDocumentDTO
+@{
+    ViewData["Title"] = "Yeni Evrak Yükle";
+}
+
+<div class="row">
+    <div class="col-xl-8 col-lg-10 mx-auto">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Yeni Evrak Yükle</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="MemberId">Müşteri ID</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" asp-for="MemberId" placeholder="Örn: usr-001" required />
+                            <span asp-validation-for="MemberId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="DocumentType">Evrak Tipi</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" asp-for="DocumentType" required>
+                                <option value="">Seçiniz...</option>
+                                <option value="Ehliyet">Ehliyet</option>
+                                <option value="Kimlik">Kimlik (T.C. / Pasaport)</option>
+                                <option value="İkametgah">İkametgah</option>
+                                <option value="Kredi Kartı">Kredi Kartı</option>
+                                <option value="Sözleşme">Sözleşme</option>
+                            </select>
+                            <span asp-validation-for="DocumentType" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="DocumentNumber">Belge Numarası</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" asp-for="DocumentNumber" placeholder="Evrak üzerinde yazan numara" />
+                            <span asp-validation-for="DocumentNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="ExpiryDate">Geçerlilik Tarihi (Varsa)</label>
+                        <div class="col-sm-9">
+                            <input type="date" class="form-control" asp-for="ExpiryDate" />
+                            <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="Notes">Notlar</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" asp-for="Notes" rows="3" placeholder="Gerekli ise notlarınızı yazın..."></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-end">
+                        <div class="col-sm-9">
+                            <button type="submit" class="btn btn-primary">Kaydet</button>
+                            <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

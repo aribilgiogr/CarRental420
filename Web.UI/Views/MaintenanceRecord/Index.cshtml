@@ -1,0 +1,78 @@
+@model IEnumerable<Core.Concretes.DTOs.MaintenanceRecord.MaintenanceRecordResponseDTO>
+@{
+    ViewData["Title"] = "Bakım Kayıtları";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Tüm Bakım Kayıtları</h5>
+        <a asp-action="Create" class="btn btn-primary">Yeni Kayıt Ekle</a>
+    </div>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Araç ID</th>
+                    <th>Tarih</th>
+                    <th>Bakım Türü</th>
+                    <th>Açıklama</th>
+                    <th>Tutar</th>
+                    <th>Durum</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@item.VehicleId</strong></td>
+                            <td>@item.MaintenanceDate.ToShortDateString()</td>
+                            <td>
+                                <span class="badge bg-label-info">@item.MaintenanceType</span>
+                            </td>
+                            <td class="text-truncate" style="max-width: 200px;" title="@item.Description">
+                                @item.Description
+                            </td>
+                            <td>@item.Cost.ToString("C")</td>
+                            <td>
+                                @if (item.MaintenanceStatus == "Tamamlandı")
+                                {
+                                    <span class="badge bg-label-success">Tamamlandı</span>
+                                }
+                                else if (item.MaintenanceStatus == "Devam Ediyor")
+                                {
+                                    <span class="badge bg-label-warning">Devam Ediyor</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-label-secondary">@item.MaintenanceStatus</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id"><i class="bx bx-edit-alt me-1"></i> Düzenle</a>
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Bu bakım kaydını silmek istediğinize emin misiniz?');">
+                                            <button type="submit" class="dropdown-item text-danger"><i class="bx bx-trash me-1"></i> Sil</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center">Henüz bir bakım kaydı eklenmemiş.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

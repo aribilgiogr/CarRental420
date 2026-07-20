@@ -1,0 +1,86 @@
+@model IEnumerable<Core.Concretes.DTOs.Payment.PaymentResponseDTO>
+@{
+    ViewData["Title"] = "Ödemeler & İşlemler";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Tüm Ödemeler</h5>
+        <a asp-action="Create" class="btn btn-primary">Manuel Ödeme Al</a>
+    </div>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>İşlem ID / Tarih</th>
+                    <th>Kiralama ID</th>
+                    <th>Tutar</th>
+                    <th>Ödeme Yöntemi</th>
+                    <th>Durum</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>#@item.TransactionNumber</strong>
+                                <div class="text-muted small">@item.PaymentDate.ToString("dd.MM.yyyy HH:mm")</div>
+                            </td>
+                            <td><a asp-controller="Rental" asp-action="Details" asp-route-id="@item.RentalId">Kiralama #@item.RentalId</a></td>
+                            <td><strong>@item.Amount.ToString("C")</strong></td>
+                            <td>
+                                @item.PaymentMethod
+                                @if (!string.IsNullOrEmpty(item.CardLastFourDigits))
+                                {
+                                    <span class="text-muted small">(**** @item.CardLastFourDigits)</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.PaymentStatus == "Başarılı" || item.PaymentStatus == "Completed")
+                                {
+                                    <span class="badge bg-label-success">Başarılı</span>
+                                }
+                                else if (item.PaymentStatus == "İade Edildi" || item.PaymentStatus == "Refunded")
+                                {
+                                    <span class="badge bg-label-secondary">İade Edildi</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-label-warning">@item.PaymentStatus</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        @if (item.PaymentStatus != "Başarısız" && item.PaymentStatus != "Failed")
+                                        {
+                                            <form asp-action="MarkAsFailed" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Bu ödemeyi iptal/başarısız olarak işaretlemek istediğinize emin misiniz?');">
+                                                <button type="submit" class="dropdown-item text-warning"><i class="bx bx-x me-1"></i> İptal Et</button>
+                                            </form>
+                                        }
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Bu kaydı tamamen silmek istediğinize emin misiniz?');">
+                                            <button type="submit" class="dropdown-item text-danger"><i class="bx bx-trash me-1"></i> Sil</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center">Kayıtlı ödeme işlemi bulunamadı.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

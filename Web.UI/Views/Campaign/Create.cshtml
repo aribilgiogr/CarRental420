@@ -1,0 +1,94 @@
+@model Core.Concretes.DTOs.Campaign.CreateCampaignDTO
+@{
+    ViewData["Title"] = "Yeni Kampanya Oluştur";
+}
+
+<div class="row">
+    <div class="col-xl-8 mx-auto">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Kampanya Detayları</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    
+                    <h6 class="mb-3">Temel Bilgiler</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Name" class="form-label">Kampanya Adı</label>
+                            <input asp-for="Name" class="form-control" placeholder="Örn: Yüzde 20 Bahar İndirimi" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CouponCode" class="form-label">Kupon Kodu (Opsiyonel)</label>
+                            <input asp-for="CouponCode" class="form-control" placeholder="Örn: BAHAR20" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Açıklama</label>
+                        <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <h6 class="mb-3 mt-4">Tür ve Kapsam</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CampaignType" class="form-label">Kampanya Türü</label>
+                            <select asp-for="CampaignType" asp-items="ViewBag.CampaignTypes" class="form-select" required></select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CampaignScope" class="form-label">Kapsam</label>
+                            <select asp-for="CampaignScope" asp-items="ViewBag.CampaignScopes" class="form-select" required></select>
+                        </div>
+                    </div>
+
+                    <h6 class="mb-3 mt-4">İndirim Oranları</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DiscountPercentage" class="form-label">İndirim Yüzdesi (%)</label>
+                            <input asp-for="DiscountPercentage" type="number" step="0.01" class="form-control" value="0" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DiscountFixedAmount" class="form-label">Sabit İndirim Tutarı (₺)</label>
+                            <input asp-for="DiscountFixedAmount" type="number" step="0.01" class="form-control" />
+                        </div>
+                    </div>
+
+                    <h6 class="mb-3 mt-4">Sınırlandırmalar</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="StartDate" class="form-label">Başlangıç Tarihi</label>
+                            <input asp-for="StartDate" type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="EndDate" class="form-label">Bitiş Tarihi</label>
+                            <input asp-for="EndDate" type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="MaxUsageCount" class="form-label">Maksimum Kullanım (Toplam)</label>
+                            <input asp-for="MaxUsageCount" type="number" class="form-control" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="MaxUsagePerMember" class="form-label">Kişi Başı Kullanım Sınırı</label>
+                            <input asp-for="MaxUsagePerMember" type="number" class="form-control" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="MinimumRentalAmount" class="form-label">Minimum Sepet Tutarı (₺)</label>
+                            <input asp-for="MinimumRentalAmount" type="number" step="0.01" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-check form-switch mb-3 mt-2">
+                        <input class="form-check-input" type="checkbox" asp-for="IsActive" checked>
+                        <label class="form-check-label" asp-for="IsActive">Kampanyayı hemen aktifleştir</label>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

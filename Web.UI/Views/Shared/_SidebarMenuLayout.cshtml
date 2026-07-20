@@ -68,17 +68,17 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
+                    <a asp-controller="Vehicle" asp-action="Index" class="menu-link">
                         <div>Tüm Araçlar</div>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
+                    <a asp-controller="VehicleCategory" asp-action="Index" class="menu-link">
                         <div>Kategoriler</div>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
+                    <a asp-controller="MaintenanceRecord" asp-action="Index" class="menu-link">
                         <div>Bakım Kayıtları</div>
                     </a>
                 </li>
@@ -92,24 +92,16 @@
                 <div>Kiralama İşlemleri</div>
             </a>
             <ul class="menu-sub">
+
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
-                        <div>Aktif Kiralamalar</div>
+                    <a asp-controller="Rental" asp-action="Index" class="menu-link">
+                        <div>Kiralamalar & Rezervasyonlar</div>
                     </a>
                 </li>
+
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
-                        <div>Rezervasyonlar</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
-                        <div>Sigorta İşlemleri</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
-                        <div>Evrak Yönetimi</div>
+                    <a asp-controller="Document" asp-action="Index" class="menu-link">
+                        <div>Evrak & Belgeler</div>
                     </a>
                 </li>
             </ul>
@@ -127,18 +119,23 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
+                    <a asp-controller="Insurance" asp-action="Index" class="menu-link">
+                        <div>Sigortalar</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a asp-controller="Invoice" asp-action="Index" class="menu-link">
                         <div>Faturalar</div>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
+                    <a asp-controller="Payment" asp-action="Index" class="menu-link">
                         <div>Ödemeler</div>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
-                        <div>Ceza Yönetimi</div>
+                    <a asp-controller="Penalty" asp-action="Index" class="menu-link">
+                        <div>Masraf Yönetimi</div>
                     </a>
                 </li>
             </ul>
@@ -152,12 +149,12 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
-                        <div>Üyeler</div>
+                    <a asp-controller="Member" asp-action="Index" class="menu-link">
+                        <div>Müşteriler (Üyeler)</div>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
+                    <a asp-controller="Review" asp-action="Index" class="menu-link">
                         <div>Değerlendirmeler</div>
                     </a>
                 </li>
@@ -176,13 +173,13 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
+                    <a asp-controller="Location" asp-action="Index" class="menu-link">
                         <div>Şubeler</div>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
-                        <div>Adresler</div>
+                    <a asp-controller="Blacklist" asp-action="Index" class="menu-link">
+                        <div>Kara Liste</div>
                     </a>
                 </li>
             </ul>
@@ -196,15 +193,11 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
+                    <a asp-controller="Campaign" asp-action="Index" class="menu-link">
                         <div>Aktif Kampanyalar</div>
                     </a>
                 </li>
-                <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
-                        <div>Araç Kampanyaları</div>
-                    </a>
-                </li>
+
             </ul>
         </li>
     </ul>

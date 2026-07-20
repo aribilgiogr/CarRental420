@@ -1,0 +1,93 @@
+@model IEnumerable<Core.Concretes.DTOs.Member.MemberResponseDTO>
+@{
+    ViewData["Title"] = "Müşteriler / Üyeler";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Tüm Müşteriler</h5>
+    </div>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Ad Soyad</th>
+                    <th>İletişim</th>
+                    <th>Kayıt Tarihi</th>
+                    <th>Doğrulama</th>
+                    <th>Kara Liste Durumu</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.FirstName @item.LastName</strong>
+                            </td>
+                            <td>
+                                <div>@item.Email</div>
+                                <div class="text-muted small">@item.PhoneNumber</div>
+                            </td>
+                            <td>@item.CreatedAt.ToShortDateString()</td>
+                            <td>
+                                @if (item.IsVerified)
+                                {
+                                    <span class="badge bg-label-success"><i class='bx bx-check-shield'></i> Doğrulanmış</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-label-warning">Bekliyor</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.IsBlacklisted)
+                                {
+                                    <span class="badge bg-label-danger"><i class='bx bx-x-circle'></i> Kara Listede</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-label-secondary">Temiz</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id"><i class="bx bx-detail me-1"></i> Detaylar</a>
+                                        @if (!item.IsBlacklisted)
+                                        {
+                                            <form asp-controller="Blacklist" asp-action="BlacklistMember" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="var reason = prompt('Lütfen kara listeye alma sebebini girin:'); if (reason !== null) { this.insertAdjacentHTML('beforeend', '<input type=\'hidden\' name=\'reason\' value=\'' + reason + '\'>'); return true; } else { return false; }">
+                                                <button type="submit" class="dropdown-item text-danger"><i class="bx bx-block me-1"></i> Kara Listeye Al</button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-controller="Blacklist" asp-action="Unblacklist" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Bu müşteriyi kara listeden çıkarmak istediğinize emin misiniz?');">
+                                                <button type="submit" class="dropdown-item text-success"><i class="bx bx-check-circle me-1"></i> Listeden Çıkar</button>
+                                            </form>
+                                        }
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                                            <button type="submit" class="dropdown-item text-danger"><i class="bx bx-trash me-1"></i> Sil</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center">Kayıtlı üye bulunamadı.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

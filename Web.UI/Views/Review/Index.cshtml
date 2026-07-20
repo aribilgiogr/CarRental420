@@ -1,0 +1,96 @@
+@model IEnumerable<Core.Concretes.DTOs.Review.ReviewResponseDTO>
+@{
+    ViewData["Title"] = "Değerlendirmeler";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Müşteri Yorumları & Değerlendirmeleri</h5>
+        <a asp-action="Create" class="btn btn-primary">Manuel Yorum Ekle</a>
+    </div>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Başlık / Puan</th>
+                    <th>Araç / Müşteri ID</th>
+                    <th>Yorum</th>
+                    <th>Tarih</th>
+                    <th>Yayın Durumu</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.Title</strong>
+                                <div class="text-warning">
+                                    @for(int i = 0; i < item.Rating; i++)
+                                    {
+                                        <i class="bx bxs-star"></i>
+                                    }
+                                    @for(int i = item.Rating; i < 5; i++)
+                                    {
+                                        <i class="bx bx-star"></i>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <div>Araç ID: @item.VehicleId</div>
+                                <div class="text-muted small">Üye ID: @item.MemberId</div>
+                            </td>
+                            <td class="text-wrap" style="max-width: 250px;">
+                                @(item.Comment.Length > 50 ? item.Comment.Substring(0, 50) + "..." : item.Comment)
+                            </td>
+                            <td>@item.ReviewDate.ToShortDateString()</td>
+                            <td>
+                                @if (item.IsPublished)
+                                {
+                                    <span class="badge bg-label-success">Yayında</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-label-secondary">Gizli</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        @if (!item.IsPublished)
+                                        {
+                                            <form asp-action="PublishReview" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                                <button type="submit" class="dropdown-item text-success"><i class="bx bx-check-circle me-1"></i> Yayınla</button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="UnpublishReview" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                                <button type="submit" class="dropdown-item text-warning"><i class="bx bx-hide me-1"></i> Gizle</button>
+                                            </form>
+                                        }
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Bu değerlendirmeyi silmek istediğinize emin misiniz?');">
+                                            <button type="submit" class="dropdown-item text-danger"><i class="bx bx-trash me-1"></i> Sil</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center">Henüz bir değerlendirme yapılmamış.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

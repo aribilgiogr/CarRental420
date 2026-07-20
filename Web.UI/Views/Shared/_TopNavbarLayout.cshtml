@@ -2,8 +2,8 @@
 @using Core.Concretes.Entities
 @inject UserManager<Member> UserManager
 @{
-    Member currentUser = null;
-    if (User.Identity.IsAuthenticated)
+    Member? currentUser = null;
+    if (User?.Identity?.IsAuthenticated == true)
     {
         currentUser = await UserManager.GetUserAsync(User);
     }
@@ -33,7 +33,7 @@
 
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             <!-- User -->
-            @if (!User.Identity.IsAuthenticated)
+            @if (User?.Identity?.IsAuthenticated != true)
             {
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>

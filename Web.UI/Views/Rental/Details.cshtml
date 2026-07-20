@@ -1,0 +1,116 @@
+@model Core.Concretes.DTOs.Rental.RentalResponseDTO
+@{
+    ViewData["Title"] = "Kiralama Detayı";
+}
+
+<div class="row">
+    <!-- Kiralama Özeti -->
+    <div class="col-xl-8 col-lg-7 col-md-7">
+        <div class="card mb-4">
+            <h5 class="card-header d-flex justify-content-between align-items-center">
+                Kiralama Sözleşmesi #@Model.Id
+                @if (Model.IsReturned)
+                {
+                    <span class="badge bg-label-success">Tamamlandı</span>
+                }
+                else
+                {
+                    <span class="badge bg-label-warning">Devam Ediyor</span>
+                }
+            </h5>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6>Müşteri Bilgileri</h6>
+                        <p class="mb-1"><strong>Üye ID:</strong> @Model.MemberId</p>
+                        <!-- In a real app, we would join Member data here via a ViewModel -->
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Araç Bilgileri</h6>
+                        <p class="mb-1"><strong>Araç ID:</strong> @Model.VehicleId</p>
+                    </div>
+                </div>
+                
+                <hr />
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6>Alış Bilgileri</h6>
+                        <p class="mb-1"><strong>Tarih:</strong> @Model.RentalStartDate.ToString("dd.MM.yyyy HH:mm")</p>
+                        <p class="mb-1"><strong>Şube ID:</strong> @Model.StartLocationId</p>
+                        <p class="mb-1"><strong>Başlangıç KM:</strong> @Model.StartOdometer</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Teslim Bilgileri</h6>
+                        <p class="mb-1"><strong>Planlanan Tarih:</strong> @Model.RentalEndDate.ToString("dd.MM.yyyy HH:mm")</p>
+                        <p class="mb-1"><strong>Şube ID:</strong> @Model.EndLocationId</p>
+                        @if (Model.IsReturned)
+                        {
+                            <p class="mb-1 text-success"><strong>Gerçekleşen Teslim:</strong> @Model.ActualReturnDate?.ToString("dd.MM.yyyy HH:mm")</p>
+                            <p class="mb-1 text-success"><strong>Teslim KM:</strong> @Model.EndOdometer</p>
+                        }
+                        else
+                        {
+                            <p class="mb-1 text-muted">Araç henüz teslim edilmedi.</p>
+                        }
+                    </div>
+                </div>
+
+                <hr />
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Finansal Bilgiler</h6>
+                        <p class="mb-1"><strong>Ara Toplam:</strong> @Model.TotalPrice.ToString("C")</p>
+                        <p class="mb-1"><strong>İndirim:</strong> @(Model.DiscountAmount?.ToString("C") ?? "0,00 ₺")</p>
+                        <p class="mb-1 text-primary fs-5 mt-2"><strong>Net Tutar: @(Model.FinalPrice?.ToString("C") ?? Model.TotalPrice.ToString("C"))</strong></p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Hasar & Notlar</h6>
+                        <p class="mb-1"><strong>Hasar Var mı?:</strong> @(Model.HasDamage ? "Evet" : "Hayır")</p>
+                        @if (Model.HasDamage)
+                        {
+                            <p class="mb-1 text-danger">@Model.DamageDescription</p>
+                        }
+                        <p class="mb-1"><strong>Notlar:</strong> @(string.IsNullOrEmpty(Model.Notes) ? "Yok" : Model.Notes)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- İşlemler -->
+    <div class="col-xl-4 col-lg-5 col-md-5">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">İşlemler</h5>
+            </div>
+            <div class="card-body">
+                @if (!Model.IsReturned)
+                {
+                    <div class="alert alert-info">
+                        Araç teslim alındıysa aşağıdaki formu doldurarak kiralama işlemini sonlandırabilirsiniz.
+                    </div>
+                    <form asp-action="Complete" method="post">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        
+                        <div class="mb-3">
+                            <label for="endOdometer" class="form-label">Teslim Kilometresi</label>
+                            <input type="number" id="endOdometer" name="endOdometer" class="form-control" required />
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success"><i class='bx bx-check me-2'></i> Aracı Teslim Al</button>
+                        </div>
+                    </form>
+                    <hr />
+                }
+                
+                <div class="d-grid gap-2">
+                    <a href="javascript:void(0);" class="btn btn-outline-primary"><i class='bx bx-printer me-2'></i> Sözleşmeyi Yazdır</a>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Listeye Dön</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

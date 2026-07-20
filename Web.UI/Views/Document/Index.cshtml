@@ -1,0 +1,108 @@
+@model IEnumerable<Core.Concretes.DTOs.Document.DocumentResponseDTO>
+@{
+    ViewData["Title"] = "Müşteri Evrakları";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Yüklenen Evraklar & Onay İşlemleri</h5>
+        <a asp-action="Create" class="btn btn-primary">Yeni Evrak Yükle</a>
+    </div>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Evrak Türü / No</th>
+                    <th>Müşteri ID</th>
+                    <th>Yüklenme Tarihi</th>
+                    <th>Geçerlilik Tarihi</th>
+                    <th>Durum</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.DocumentType</strong>
+                                <div class="text-muted small">No: @item.DocumentNumber</div>
+                            </td>
+                            <td>@item.MemberId</td>
+                            <td>@item.UploadDate.ToShortDateString()</td>
+                            <td>@(item.ExpiryDate?.ToShortDateString() ?? "Süresiz")</td>
+                            <td>
+                                @if (item.IsApproved)
+                                {
+                                    <span class="badge bg-label-success">Onaylandı</span>
+                                }
+                                else if (!string.IsNullOrEmpty(item.RejectionReason))
+                                {
+                                    <span class="badge bg-label-danger" title="@item.RejectionReason">Reddedildi</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-label-warning">Bekliyor</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        @if (!item.IsApproved)
+                                        {
+                                            <form asp-action="ApproveDocument" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                                <button type="submit" class="dropdown-item text-success"><i class="bx bx-check me-1"></i> Onayla</button>
+                                            </form>
+                                            <a class="dropdown-item text-warning" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#rejectModal-@item.Id"><i class="bx bx-x me-1"></i> Reddet</a>
+                                        }
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Bu evrak kaydını silmek istediğinize emin misiniz?');">
+                                            <button type="submit" class="dropdown-item text-danger"><i class="bx bx-trash me-1"></i> Sil</button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Reject Modal -->
+                                <div class="modal fade" id="rejectModal-@item.Id" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Evrak Reddet</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form asp-action="RejectDocument" method="post">
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col mb-3">
+                                                            <label for="reason" class="form-label">Reddetme Sebebi</label>
+                                                            <textarea name="reason" class="form-control" placeholder="Örn: Belge okunamıyor, süresi geçmiş vb." required></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">İptal</button>
+                                                    <button type="submit" class="btn btn-danger">Reddet</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center">Kayıtlı evrak bulunamadı.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,104 @@
+@model Core.Concretes.DTOs.Invoice.CreateInvoiceDTO
+@{
+    ViewData["Title"] = "Manuel Fatura Kes";
+}
+
+<div class="row">
+    <div class="col-xl-8 col-lg-10 mx-auto">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Manuel Fatura Kes</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="RentalId">Kiralama No</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" asp-for="RentalId" placeholder="Örn: 901" required />
+                            <span asp-validation-for="RentalId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="MemberId">Müşteri ID</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" asp-for="MemberId" placeholder="Örn: usr-001" required />
+                            <span asp-validation-for="MemberId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="SubTotal">Ara Toplam (₺)</label>
+                        <div class="col-sm-9">
+                            <input type="number" step="0.01" class="form-control" asp-for="SubTotal" required />
+                            <span asp-validation-for="SubTotal" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="TaxAmount">Vergi Tutarı (₺)</label>
+                        <div class="col-sm-9">
+                            <input type="number" step="0.01" class="form-control" asp-for="TaxAmount" required />
+                            <span asp-validation-for="TaxAmount" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="DiscountAmount">İndirim Tutarı (₺)</label>
+                        <div class="col-sm-9">
+                            <input type="number" step="0.01" class="form-control" asp-for="DiscountAmount" />
+                            <span asp-validation-for="DiscountAmount" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="TotalAmount">Genel Toplam (₺)</label>
+                        <div class="col-sm-9">
+                            <input type="number" step="0.01" class="form-control" asp-for="TotalAmount" required />
+                            <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="InvoiceStatus">Durum</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" asp-for="InvoiceStatus" required>
+                                <option value="Bekliyor">Bekliyor</option>
+                                <option value="Ödendi">Ödendi</option>
+                                <option value="İptal">İptal</option>
+                            </select>
+                            <span asp-validation-for="InvoiceStatus" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="DueDate">Son Ödeme Tarihi</label>
+                        <div class="col-sm-9">
+                            <input type="date" class="form-control" asp-for="DueDate" />
+                            <span asp-validation-for="DueDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="Notes">Fatura Notu</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" asp-for="Notes" rows="3" placeholder="Fatura ile ilgili ek açıklamalar..."></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-end">
+                        <div class="col-sm-9">
+                            <button type="submit" class="btn btn-primary">Kaydet</button>
+                            <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,85 @@
+@model IEnumerable<Core.Concretes.DTOs.Rental.RentalResponseDTO>
+@{
+    ViewData["Title"] = "Kiralamalar & Rezervasyonlar";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Tüm Kiralamalar</h5>
+        <a asp-action="Create" class="btn btn-primary">Yeni Kiralama Başlat</a>
+    </div>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Müşteri ID</th>
+                    <th>Araç ID</th>
+                    <th>Tarih Aralığı</th>
+                    <th>Tutar</th>
+                    <th>Durum</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@item.MemberId</strong></td>
+                            <td>Araç: @item.VehicleId</td>
+                            <td>
+                                <div>@item.RentalStartDate.ToShortDateString() - @item.RentalEndDate.ToShortDateString()</div>
+                                <div class="text-muted small">@item.RentalDays Gün</div>
+                            </td>
+                            <td>
+                                <div><strong>@item.FinalPrice?.ToString("C")</strong></div>
+                                @if (item.DiscountAmount > 0)
+                                {
+                                    <div class="text-muted small text-decoration-line-through">@item.TotalPrice.ToString("C")</div>
+                                }
+                            </td>
+                            <td>
+                                @if (item.IsReturned)
+                                {
+                                    <span class="badge bg-label-success">Tamamlandı</span>
+                                }
+                                else if (item.RentalEndDate < DateTime.UtcNow)
+                                {
+                                    <span class="badge bg-label-danger">Gecikti</span>
+                                }
+                                else if (item.RentalStartDate > DateTime.UtcNow)
+                                {
+                                    <span class="badge bg-label-info">Rezervasyon</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-label-warning">Kirada</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id"><i class="bx bx-show me-1"></i> Detaylar</a>
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Bu kiralama kaydını silmek istediğinize emin misiniz?');">
+                                            <button type="submit" class="dropdown-item text-danger"><i class="bx bx-trash me-1"></i> Sil</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center">Kayıtlı kiralama işlemi bulunamadı.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

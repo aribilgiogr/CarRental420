@@ -1,0 +1,107 @@
+@model Core.Concretes.DTOs.Review.CreateReviewDTO
+@{
+    ViewData["Title"] = "Yeni Değerlendirme Ekle";
+}
+
+<div class="row">
+    <div class="col-xl-8 col-lg-10 mx-auto">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Manuel Değerlendirme / Yorum Ekle</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="RentalId">Kiralama No</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" asp-for="RentalId" placeholder="Örn: 901" required />
+                            <span asp-validation-for="RentalId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="MemberId">Müşteri ID</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" asp-for="MemberId" placeholder="Örn: usr-001" required />
+                            <span asp-validation-for="MemberId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="Title">Başlık</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" asp-for="Title" placeholder="Kısa bir başlık" required />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="Comment">Yorum</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" asp-for="Comment" rows="4" placeholder="Müşterinin deneyimi hakkında yazdıkları..." required></textarea>
+                            <span asp-validation-for="Comment" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" asp-for="Rating">Genel Puan</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" asp-for="Rating" required>
+                                <option value="5">5 - Mükemmel</option>
+                                <option value="4">4 - Çok İyi</option>
+                                <option value="3">3 - İyi</option>
+                                <option value="2">2 - Kötü</option>
+                                <option value="1">1 - Çok Kötü</option>
+                            </select>
+                            <span asp-validation-for="Rating" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">Detaylı Puanlar</label>
+                        <div class="col-sm-9">
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label" asp-for="VehicleRating">Araç Puanı</label>
+                                    <input type="number" min="1" max="5" class="form-control" asp-for="VehicleRating" />
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label" asp-for="ServiceRating">Hizmet Puanı</label>
+                                    <input type="number" min="1" max="5" class="form-control" asp-for="ServiceRating" />
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label" asp-for="CleanlinessRating">Temizlik Puanı</label>
+                                    <input type="number" min="1" max="5" class="form-control" asp-for="CleanlinessRating" />
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label" asp-for="StaffRating">Personel Puanı</label>
+                                    <input type="number" min="1" max="5" class="form-control" asp-for="StaffRating" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-9 offset-sm-3">
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsPublished">
+                                <label class="form-check-label" asp-for="IsPublished">Hemen Yayınla (Sitede görünür)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-end">
+                        <div class="col-sm-9">
+                            <button type="submit" class="btn btn-primary">Kaydet</button>
+                            <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
